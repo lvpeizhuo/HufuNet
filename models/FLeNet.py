@@ -6,12 +6,6 @@ from collections import OrderedDict
 
 
 class FLeNet(nn.Module):
-    '''
-
-    自定义的CNN网络�?个卷积层，包含batch norm�?个pool,
-    3个全连接层，包含Dropout
-    输入�?8x28x1s
-    '''
     def __init__(self, in_place = 3, planes = 6, stride = 1, mode = 'train'):
         super(FLeNet, self).__init__()
 
@@ -56,7 +50,7 @@ class FLeNet(nn.Module):
         
         self.fc1 = nn.Linear(in_features=64, out_features=10)
         self.fc2 = nn.Linear(in_features=64, out_features=10)
-
+        
     def forward(self, x):
 
         

@@ -17,8 +17,8 @@ from tqdm   import tqdm
 
 
 parser = argparse.ArgumentParser(description='PyTorch CIFAR10 Training')
-parser.add_argument('--model',      default='resnet18', help='VGG-16, ResNet-18, LeNet')
-parser.add_argument('--checkpoint', default='resnet18', type=str, help='Pretrained model to start from')#--checkpoint=lenet——low—�?
+parser.add_argument('--model',      default='VGG', help='VGG-16, ResNet-18, LeNet')
+parser.add_argument('--checkpoint', default='VGG', type=str, help='Pretrained model to start from')#--checkpoint=lenet——low—�?
 parser.add_argument('--GPU', default='0', type=str,help='GPU to use')
 parser.add_argument('--save_every', default=1, type=int, help='How often to save checkpoints in number of prunes (e.g. 10 = every 10 prunes)')
 parser.add_argument('--cutout', action='store_true')
@@ -36,12 +36,8 @@ if torch.cuda.is_available():
 global error_history
 error_history = []
 
-models = {'Resnet9'  : ResNet9(),
-          'Resnet18' : ResNet18(),
-          'Resnet34' : ResNet34(),
-          'Resnet50' : ResNet50(),
-          'HufuNet': flenet(),
-          'Googlenet': googlenet()}
+models = {'VGG':vgg(),
+          'FLenet':flenet()}
 model = models[args.model]
 model, sd = load_model(model, args.checkpoint, False)
 
@@ -55,9 +51,9 @@ model.to(device)
 transform = transforms.Compose([transforms.Resize(32),transforms.ToTensor()])
 batch_size = 256
 
-if args.model=='Resnet18' or args.model=='Googlenet':
+if args.model=='VGG':
     test_dataset = torchvision.datasets.CIFAR10(root='./data', train=False,download = True, transform=transform)
-elif args.model == 'HufuNet':
+elif args.model == 'FLenet':
     test_dataset = torch.load('./data/FM_test')
 testloader = DataLoader(test_dataset, batch_size=batch_size)
 
