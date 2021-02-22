@@ -3,30 +3,40 @@
 A PyTorch introduction of HufuNet.
 
 
-Since our paper has not been published yet, we first give part of the verification code. Model training and HufuNet embedded code are then open source after our paper is accepted. I'm currently in the process of updating this to work with PyTorch! Currently the only network type that works is Resnet18 as DNN-watermarked, other networks coming soon. 
-
-
 ## Introduction
 
 Given a watermark as HufuNet, the following is the workflow of HufuNet:
 
 ![alt text](./resources/overview.png)
 
-The following is the network structure parameters of HufuNet:
-
-![alt text](./resources/HufuNet_parameter.png)
-
 ## Usage
 
 Generate HufuNet:
 ```bash
-python train.py --model=HufuNet --checkpoint=HufuNet
+python train.py --model==FLenet --checkpoint==FLenet --epochs=100  ==>  FLenet.t7 (92.60%)
 ```
-Verify the performance of Resnet18 embedded with EPH on CIFAR-10:
+Embedded HufuNet into VGG:
 ```bash
-python verify.py --model=resnet18 --checkpoint=resnet18_done
+python train.py --model=VGG --checkpoint=VGG_init --epochs=1  ==>  VGG_init.t7 (39.59%)
+python vgg_grad_false.py  ==>  VGG_done_3*3.t7(Final Poisoned Model 77.57%) 
 ```
-Extract HufuNet from Resnet18 and verify it on FASHION-MNIST:
+Simulate Attacking Watermarked-VGG Model:
 ```bash
-python convertEmbed.py --model1=HufuNet --model2=resnet18_done
+python vgg_grad_true.py  ==>  VGG_done_finetune100.t7 (Finetune 75.15%)
+python prune.py --prune_rate=60  ==>  VGG_done_3*3_prune60.t7 (Prune 71.65%)
+python simulate_reorder_attack.py  ==>  VGG_ReOrder.t7 (Reorder 71.65%)
+python simulate_EnlargeC_attack.py  ==>  VGG_EnlargeC.t7 (Final Victim Model 71.65%)
+```
+Restore VGG to Origin:
+```bash
+python simulate_restore_scale.py  ==>  VGG_RestoreCoff.t7 (Restore Number Scale)
+python simulate_restore_order.py  ==>  VGG_RestoreOrder.t7 (Restore Filters Position)
+```
+Extract HufuNet from VGG and verify it on FASHION-MNIST:
+```bash
+python structureDiff_and_convertEmbed.py --model1=FLenet --model2=VGG_RestoreOrder
+```
+Draw Cos-Similarity Distribution of VGG:
+```bash
+python draw_parameters_distribution.py
 ```
