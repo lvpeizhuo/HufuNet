@@ -4,7 +4,7 @@ A PyTorch introduction of HufuNet.
 
 
 ## Introduction
-
+This code includes experiments for paper "HufuNet: Embedding the Left Piece as Watermark and Keeping the Right Piece for Ownership Verification in Deep Neural Networks" (https://arxiv.org/abs/2103.13628)
 Given a watermark as HufuNet, the following is the workflow of HufuNet:
 
 ![alt text](./resources/overview.png)
