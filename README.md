@@ -41,3 +41,25 @@ Draw Cos-Similarity Distribution of VGG:
 ```bash
 python draw_parameters_distribution.py
 ```
+## Citation
+
+@article{DBLP:journals/corr/abs-2103-13628,
+  author    = {Peizhuo Lv and
+               Pan Li and
+               Shengzhi Zhang and
+               Kai Chen and
+               Ruigang Liang and
+               Yue Zhao and
+               Yingjiu Li},
+  title     = {HufuNet: Embedding the Left Piece as Watermark and Keeping the Right
+               Piece for Ownership Verification in Deep Neural Networks},
+  journal   = {CoRR},
+  volume    = {abs/2103.13628},
+  year      = {2021},
+  url       = {https://arxiv.org/abs/2103.13628},
+  archivePrefix = {arXiv},
+  eprint    = {2103.13628},
+  timestamp = {Wed, 07 Apr 2021 15:31:46 +0200},
+  biburl    = {https://dblp.org/rec/journals/corr/abs-2103-13628.bib},
+  bibsource = {dblp computer science bibliography, https://dblp.org}
+}
