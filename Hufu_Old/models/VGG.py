@@ -4,11 +4,11 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-class VGG(nn.Module): #VGG11 已经??3 * 32 * 32 兼容
+class VGG(nn.Module): #VGG11 已经�?3 * 32 * 32 兼容
     def __init__(self, in_planes = 3, planes = 6, stride=1, mode='train'):
         super(VGG, self).__init__()
         self.mode = mode
-        # 3 * 32 * 32  两个输出通道??3, 32, 3)通道的化为一体，就是(3, 64, 3)！！！！！！！！！！??        
+        # 3 * 32 * 32  两个输出通道�?3, 32, 3)通道的化为一体，就是(3, 64, 3)！！！！！！！！！！�?        
         self.conv1_1 = nn.Conv2d(3, 64, 3, padding = 1, bias = False) # 
         self.conv2_1 = nn.Conv2d(64, 128, 3, padding = 1, bias = False) # 
         self.conv3_1 = nn.Conv2d(128, 256, 3, padding = 1, bias = False)
@@ -18,7 +18,7 @@ class VGG(nn.Module): #VGG11 已经??3 * 32 * 32 兼容
         self.conv5_1 = nn.Conv2d(512, 512, 3, padding = 1, bias = False)
         self.conv5_2 = nn.Conv2d(512, 512, 3, padding = 1, bias = False)
         
-
+        
         self.mask1_1 = nn.Conv2d(3, 64, 3, padding = 1, bias = False)
         self.mask1_1.weight.data = torch.ones(self.mask1_1.weight.size())
         self.grad1_1 = nn.Conv2d(3, 64, 3, padding = 1, bias = False)
@@ -58,7 +58,7 @@ class VGG(nn.Module): #VGG11 已经??3 * 32 * 32 兼容
         self.mask5_2.weight.data = torch.ones(self.mask5_2.weight.size())
         self.grad5_2 = nn.Conv2d(512, 512, 3, padding = 1, bias = False)
         self.grad5_2.weight.data = torch.ones(self.grad5_2.weight.size())
-
+        
 
         self.fc1 = nn.Linear(512, 10)
 
@@ -89,6 +89,7 @@ class VGG(nn.Module): #VGG11 已经??3 * 32 * 32 兼容
         x = F.max_pool2d(x, 2)
         x = x.view(x.size(0), -1)
         x = self.fc1(x)
+        #print('ninniinin')
         return x
     
     def __prune__(self, threshold):
