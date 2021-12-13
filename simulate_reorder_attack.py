@@ -22,19 +22,17 @@ from tqdm   import tqdm
 from PIL import Image
 
  
-model = torch.load('checkpoints/VGG_done_3*3_prune60.t7', map_location='cpu')
-for i,name in enumerate([key for key in model['net'].keys() if 'mask' not in key and 'grad' not in key and 'bias' not in key]):
-        print(name)
-        #print(i)           
-            
+model = torch.load('checkpoints/VGG_prune60.t7', map_location='cpu')
+print(model['net'].keys())
+
+for i,name in enumerate([key for key in model['net'].keys() if 'conv' in key and 'weight' in key]):
+        print(i)
         if i==8: # fc layer skip filters' order changing
             (a,b) = model['net'][name].size()
             tmp = model['net'][name][:,0].view(a,1)
             model['net'][name] = model['net'][name][:,1:]
             model['net'][name] = torch.cat([model['net'][name],tmp],1)
-            
             break
-
         # transfer filters' order: set first filter to tail
         (a,b,c,d) = model['net'][name].size()
         tmp = model['net'][name][0,:,:,:].view(1,b,c,d)
@@ -46,6 +44,6 @@ for i,name in enumerate([key for key in model['net'].keys() if 'mask' not in key
             tmp = model['net'][name][:,0,:,:].view(a,1,c,d)
             model['net'][name] = model['net'][name][:,1:,:,:]
             model['net'][name] = torch.cat([model['net'][name],tmp],1)
-    
+
 torch.save(model,'checkpoints/VGG_ReOrder.t7')
         

@@ -50,12 +50,11 @@ parser.add_argument('--weight_decay', default=0.0005, type=float)
 args = parser.parse_args()
 
 
-Model_10 = torch.load('checkpoints/VGG_done_3*3.t7')
-# Model_10 = torch.load('checkpoints/VGG_done.t7')
-# Model_50 = torch.load('checkpoints/VGG_ReOrder.t7')
+Model_10 = torch.load('checkpoints/VGG_done.t7')
 Model_50 = torch.load('checkpoints/VGG_RestoreCoff.t7')
 
-layer_names = [key for key in Model_10['net'].keys() if 'conv' in key or 'fc' in key]
+layer_names = [key for key in Model_10['net'].keys() if 'conv' in key and 'weight' in key]
+print(layer_names)
 
 correct = 0
 error=0 # record the number of error filters
@@ -64,16 +63,17 @@ total=0 # record the number of total filters
 for n,name in enumerate(layer_names[:8]):
     print(name)
     (a,b,c,d) = Model_10['net'][name].size() # a:out_channel  b:in_channel
-    
+    print(a,b,c,d)
+
     list10 = []
     list50 = []
     
-    cur_layer = Model_50['net'][name].clone() # store current layer's parameters, prepare to replace 
-    nxt_layer = Model_50['net'][layer_names[n+1]].clone()
+    cur_layer = Model_50['net']['module.'+name].clone() # store current layer's parameters, prepare to replace 
+    nxt_layer = Model_50['net']['module.'+layer_names[(n+1)]].clone()
     
     for i in range(a):
         U10, sig10, V10 = np.linalg.svd(Model_10['net'][name].cpu().numpy()[i,:,:,:].reshape(c*d,-1))
-        U50, sig50, V50 = np.linalg.svd(Model_50['net'][name].cpu().numpy()[i,:,:,:].reshape(c*d,-1))
+        U50, sig50, V50 = np.linalg.svd(Model_50['net']['module.'+name].cpu().numpy()[i,:,:,:].reshape(c*d,-1))
         # list10.append(np.vstack((U10[:,:min(a,c*d)],V10.T[:min(a,c*d),:])).flatten('f'))
         # list50.append(np.vstack((U50[:,:min(a,c*d)],V50.T[:min(a,c*d),:])).flatten('f'))
         list10.append(sig10)
@@ -91,6 +91,7 @@ for n,name in enumerate(layer_names[:8]):
         result=[]
         for j in range(len(list10)):
             result.append(cos_sim(list10[j], list50[i]))
+
             #result.append(PingFangCha(list10[j], list50[i]))
         
         tmp=np.argsort(-np.array(result))
@@ -98,17 +99,18 @@ for n,name in enumerate(layer_names[:8]):
         #print(i)
         #print(tmp)
 
-        if i!=tmp[0]:
-            if (i+1)%a==tmp[0]:
-                correct+=1
-            #error+=1
-            Model_50['net'][name][tmp[0],:,:,:] = cur_layer[i,:,:,:]
-            if n==7:
-                Model_50['net'][layer_names[n+1]][:,tmp[0]] = nxt_layer[:,i]
-            else:
-                Model_50['net'][layer_names[n+1]][:,tmp[0],:,:] = nxt_layer[:,i,:,:]
-        total+=1
-    
+        for k in range(len(tmp)):
+            if i!=tmp[k]:
+                if (i+1)%a==tmp[k]:
+                    correct+=1
+                #error+=1
+                    Model_50['net']['module.'+name][tmp[k],:,:,:] = cur_layer[i,:,:,:]
+                    if n==7:
+                        Model_50['net']['module.'+layer_names[n+1]][:,tmp[k]] = nxt_layer[:,i]
+                    else:
+                        Model_50['net']['module.'+layer_names[n+1]][:,tmp[k],:,:] = nxt_layer[:,i,:,:]
+                    break
+            k+=1
     print(correct,a)
     correct=0
 torch.save(Model_50,'checkpoints/VGG_RestoreOrder.t7')        

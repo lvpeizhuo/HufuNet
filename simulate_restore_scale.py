@@ -24,11 +24,11 @@ from PIL import Image
 
 # Restore coffs of filters
 
-Model_10 = torch.load('checkpoints/VGG_done_3*3.t7')
+Model_10 = torch.load('checkpoints/VGG_done.t7')
 Model_50 = torch.load('checkpoints/VGG_EnlargeC.t7')
 #Model_50 = torch.load('checkpoints/VGG_RestoreOrder.t7')
 
-for name in [key for key in Model_10['net'].keys() if 'conv' in key]:
+for name in [key for key in Model_10['net'].keys() if 'conv' in key and 'weight' in key]:
     print(name)
     (a,b,c,d) = Model_10['net'][name].size() # a:out_channel  b:in_channel
     

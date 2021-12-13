@@ -21,23 +21,23 @@ from tqdm   import tqdm
 
 from PIL import Image
 
-#model = torch.load('checkpoints/VGG_done_3*3_prune10.t7',map_location='cpu')
 model = torch.load('checkpoints/VGG_ReOrder.t7',map_location='cpu')
-for name in [key for key in model['net'].keys() if 'conv' in key]:
-    if name == 'module.conv1_1.weight':
+for name in [key for key in model['net'].keys() if 'conv' in key and 'weight' in key]:
+    nameo = name
+    if nameo == 'conv1_1.weight':
         model['net'][name] *= 2**7
-    elif name == 'module.conv2_1.weight':
+    elif nameo == 'conv2_1.weight':
         model['net'][name] /= 2**4
-    elif name == 'module.conv3_1.weight':
+    elif nameo == 'conv3_1.weight':
         model['net'][name] /= 2**3
-    elif name == 'module.conv3_2.weight':
+    elif nameo == 'conv3_2.weight':
         model['net'][name] /= 2**3
-    elif name == 'module.conv4_1.weight':
+    elif nameo == 'conv4_1.weight':
         model['net'][name] *= 2**7
-    elif name == 'module.conv4_2.weight':
+    elif nameo == 'conv4_2.weight':
         model['net'][name] /= 2**2
-    elif name == 'module.conv5_1.weight':
+    elif nameo == 'conv5_1.weight':
         model['net'][name] /= 2
-    elif name == 'module.conv5_2.weight':
+    elif nameo == 'conv5_2.weight':
         model['net'][name] /= 2
 torch.save(model,'checkpoints/VGG_EnlargeC.t7')
