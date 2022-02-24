@@ -16,9 +16,12 @@ import numpy as np
 from ssim import *
 
 import json
+seed="2020"
 
 import matplotlib
 import matplotlib as mpl
+import hmac
+import hashlib
 
 import matplotlib.mlab as mlab
 from scipy.stats import norm
@@ -233,6 +236,7 @@ def train_with_grad_control(model, trainloader, criterion, optimizer,HufuSize, M
         # compute gradient and do SGD step
         optimizer.zero_grad()
         loss.backward()
+
         Mgrad_nonzeroes = 0
         Hgrad_nonzeroes = 0   
         Hgrad_list = torch.tensor([0]).to(device)
@@ -246,6 +250,8 @@ def train_with_grad_control(model, trainloader, criterion, optimizer,HufuSize, M
                 name = name.rstrip('.weight') # 'conv1_1'
                 name_sp=name.split('.')
                 print(name_sp)
+                torch.autograd.set_detect_anomaly(True)
+
                 current_grad = getattr(model, name_sp[0]).weight.grad
                 #current_grad = getattr(getattr(getattr(model, name_sp[0]),name_sp[1]),name_sp[2]).weight.grad
 
@@ -645,7 +651,6 @@ def _get_layer(module, x, layer_output = 'output',
                layer_input= 'record', prefix = '',
                seq_only= True, init= False):
     for name, child in module.named_children():
-        print(name)
         x = x.to(device)
         if('layer' in name):
             x = child(x)
@@ -681,7 +686,7 @@ def Fuse(model_state_dict,ihufu,iufuh):
     
     #insert_channel=[2,5,8,12,15,18,20,22,25,28,31,34,42,50]
     
-    for name2 in [key for key in pn.keys() if 'conv' in key and 'weight' in key]:
+    for name2 in [key for key in tobe.keys() if 'conv' in key and 'weight' in key]:
         if(tobe[name2].size()[0]>=50):
             for i in range(tobe[name2].size()[0]):
                 tmp2 = torch.cat([tmp2, tobe[name2][i].view(-1)], 0)

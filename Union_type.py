@@ -21,7 +21,7 @@ from models.autoencoder import *
 
 torch.backends.cudnn.enabled = False
 
-seed="2020"
+
 
 parser = argparse.ArgumentParser(description='PyTorch MNIST Training')
 parser.add_argument('--model',      default='VGG', help='resnet9/18/34/50, wrn_40_2/_16_2/_40_1')
@@ -29,10 +29,10 @@ parser.add_argument('--prepared_model',      default=None, type=str)
 parser.add_argument('--checkpoint',default='VGG_done',type=str)
 parser.add_argument('--data_loc',   default='/disk/scratch/datasets/MNIST', type=str)
 parser.add_argument('--start_mixthreshold_epoch', default=5, type=int)
-parser.add_argument('--fuse_per_epoch', default=5, type=int)
+parser.add_argument('--fuse_per_epoch', default = 5, type=int)
 parser.add_argument('--GPU', default='0,1', type=str,help='GPU to use')
 parser.add_argument('--epochs',     default=50, type=int)
-parser.add_argument('--lr',         default=0.1)
+parser.add_argument('--lr',         default=0.0005)
 parser.add_argument('--lr_decay_ratio', default=0.2, type=float, help='learning rate decay')
 parser.add_argument('--weight_decay', default=0.0005, type=float)
 args = parser.parse_args()
@@ -45,6 +45,9 @@ tobe = torch.load(args.prepared_model, map_location='cpu')
 layers_size={}
 tmp2 = torch.tensor([])
 pn = tobe['net']
+init_a = 0.6523
+init_b = 0.0000800375825259
+
 
 for name2 in [key for key in pn.keys() if 'conv' in key and 'weight' in key]:
     if(tobe['net'][name2].size()[0]>=50):
@@ -180,10 +183,10 @@ class MultiLoss(nn.Module):
         loss_func = nn.CrossEntropyLoss().cuda()
         loss1 = loss_func(outputs, targets)
         beta1 = torch.abs(torch.tensor(prevGM/prevGH))
-        beta2 = prevGM * torch.abs(1/(0.6523 - loss1))  / 0.0000800375825259 
-        loss3 = beta1*beta2
-        loss2 = prevGM * torch.abs(1/(0.6523 - loss1)) - gamma * 0.0000800375825259 
-        return loss1 + 0.01*alpha*torch.abs(10-beta1)+ 0.01*alpha*abs(prevRatio)
+        beta2 = prevGM * torch.abs(1/(init_a - loss1))  / init_b
+        loss3 = beta1 * beta2
+        loss2 = prevGM * torch.abs(1/(init_a - loss1)) - gamma * init_b
+        return loss1 + alpha * (3 - beta1) * (3 - beta1)+ alpha * (1.5 - prevRatio) * (1.5 - prevRatio) + torch.exp(-1 * beta2) * beta2
         
 class SingleLoss(nn.Module):
     def __init__(self):
@@ -197,11 +200,6 @@ criterion = SingleLoss()
 Mgrad_test = torch.tensor([0]).to(device)
 Hgrad_test = torch.tensor([0]).to(device)
 
-def adjust_learning_rate(init_lr, optimizer, epoch, lradj):
-    """Sets the learning rate to the initial LR decayed by 10 every 20 epochs"""
-    lr = init_lr * (0.1 ** (epoch // lradj))
-    for param_group in optimizer.param_groups:
-        param_group['lr'] = lr     
          
 for epoch in tqdm(range(args.epochs)):
 
@@ -220,10 +218,10 @@ for epoch in tqdm(range(args.epochs)):
         
     new_hufu = model2.encoder.state_dict()   
 
-    if(epoch > args.epochs*0.3):
-        alpha = 0.001
+    if(epoch > args.epochs * 0.3):
+        alpha = 0.00001
     else:
-        alpha=0.0005
+        alpha=0.000005
     result = train_with_grad_control(model, trainloader, criterion, optimizer,len1 ,len2, prevGH,prevGM,alpha,10,prevRatio,epoch)    
     
     [prevGH,prevGM,prevRatio,Mgrad_epo,Hgrad_epo] = result
