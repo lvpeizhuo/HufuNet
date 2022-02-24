@@ -19,7 +19,7 @@ python train_autoencoder.py --epochs=100  ==>  model_decoder_param.t7 / model_en
 Embed HufuNet into VGG and start training:
 ```bash
 python train.py --model=VGG --checkpoint=VGG_init --epochs=1 ==> VGG_init.t7
-python Union_type.py --model=VGG --checkpoint=VGG_done --prepared_model VGG_init.t7 --epoch=50 ==> VGG_embeded.t7 / VGG_done.t7
+python Union_type.py --model=VGG --checkpoint=VGG_done --prepared_model ./checkpoints/VGG_init.t7 --epoch=50 ==> VGG_embeded.t7 / VGG_done.t7
 ```
 
 Simulate Attacking Watermarked-VGG Model:
