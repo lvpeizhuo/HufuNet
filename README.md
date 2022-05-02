@@ -45,11 +45,3 @@ Draw Cos-Similarity Distribution of VGG:
 python draw_parameters_distribution.py
 ```
 
-## Citation
-
-@article{lv2021hufunet,
-  title={HufuNet: Embedding the Left Piece as Watermark and Keeping the Right Piece for Ownership Verification in Deep Neural Networks},
-  author={Lv, Peizhuo and Li, Pan and Zhang, Shengzhi and Chen, Kai and Liang, Ruigang and Zhao, Yue and Li, Yingjiu},
-  journal={arXiv preprint arXiv:2103.13628},
-  year={2021}
-}
