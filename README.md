@@ -1,4 +1,4 @@
-# [HufuNet: Embedding Encoder as Watermark and Keeping Decoder for Ownership Verification in Deep Neural Networks]
+# [A Robustness-Assured White-Box Watermark in Neural Networks]
 
 A PyTorch introduction of updated HufuNet. The original version of Hufunet is placed in "./Hufu_Old"
 
@@ -45,3 +45,16 @@ Draw Cos-Similarity Distribution of VGG:
 python draw_parameters_distribution.py
 ```
 
+## Citation
+If it helps you, you can cite our paper as below:
+```bash
+@ARTICLE{10038500,
+  author={Lv, Peizhuo and Li, Pan and Zhang, Shengzhi and Chen, Kai and Liang, Ruigang and Ma, Hualong and Zhao, Yue and Li, Yingjiu},
+  journal={IEEE Transactions on Dependable and Secure Computing}, 
+  title={A Robustness-Assured White-Box Watermark in Neural Networks}, 
+  year={2023},
+  volume={},
+  number={},
+  pages={1-14},
+  doi={10.1109/TDSC.2023.3242737}}
+```
