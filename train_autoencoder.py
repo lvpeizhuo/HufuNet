@@ -101,6 +101,6 @@ for epoch in range(args.epochs):
         if step % 5 == 0:
             x,y = eval(img,decoded,0)
             if (step % args.checkpoint_per_epoch==0):
-                torch.save(model.encoder.state_dict(), 'weight\model_encoder_param.t7')
-                torch.save(model.decoder.state_dict(), 'weight\model_decoder_param.t7')
+                torch.save(model.encoder.state_dict(), './weight/model_encoder_param.t7')
+                torch.save(model.decoder.state_dict(), './weight/model_decoder_param.t7')
             print('Epoch: ', epoch, '| train loss: %.4f' % loss.data.to(device='cpu').numpy())

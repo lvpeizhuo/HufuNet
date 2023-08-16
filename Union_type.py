@@ -243,4 +243,7 @@ for epoch in tqdm(range(args.epochs)):
         beta_1 = torch.mean(Mgrad_test) / torch.mean(Hgrad_test) 
         Var_Ratio = torch.var(Mgrad_test) / torch.var(Hgrad_test)
     scheduler.step()
-validate_ori(model, epoch, testloader, criterion,args.checkpoint)
+    
+criterion_ori = nn.CrossEntropyLoss()
+
+validate_ori(model, epoch, testloader, criterion_ori, args.checkpoint)
