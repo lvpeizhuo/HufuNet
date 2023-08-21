@@ -42,8 +42,8 @@ def extract(EmbededNet,SavePosition):
 
     tmp2 = torch.tensor([])
     mask2 = torch.tensor([])
-    #for name2 in [key for key in pn.keys() if 'conv' in key and 'weight' in key]: #VGG
-    for name2 in [key for key in pn.keys() if 'conv' in key and 'weight' in key and 'layer' in key and 'shortcut' not in key]: #Res
+    for name2 in [key for key in pn.keys() if 'conv' in key and 'weight' in key]: #VGG
+    #for name2 in [key for key in pn.keys() if 'conv' in key and 'weight' in key and 'layer' in key and 'shortcut' not in key]: #Res
     #for name2 in [key for key in pn.keys() if 'conv' in key and 'weight' in key and 'branch' in key and 'bn' not in key]: #Googlenet
         if(pn[name2].size()[0]>=50):
             for i in range(tobe['net'][name2].size()[0]):
