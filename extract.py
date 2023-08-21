@@ -22,7 +22,6 @@ torch.backends.cudnn.enabled = False
 ################################################################################################################
 # find embed location and embed the parameters back to hufu
 
-
 seed = "2020"
 
 
@@ -31,17 +30,17 @@ def extract(EmbededNet,SavePosition):
     tobe = EmbededNet
     ufuh = torch.load('weight/model_decoder_param.t7', map_location='cpu')
 
-    '''
+
+    pn = tobe
     tobe={}
-    tobe['net'] = tob
-    print(tobe.keys())
-    '''
-    pn = tobe['net'] #.state_dict()
+    tobe['net'] = pn
+    
+    print(pn.keys())
 
     #insert_channel=[2,5,8,12,15,18,20,22,25,28,31,34,42,50]
 
-    tmp2 = torch.tensor([])
-    mask2 = torch.tensor([])
+    tmp2 = torch.tensor([]).cuda()
+    mask2 = torch.tensor([]).cuda()
     for name2 in [key for key in pn.keys() if 'conv' in key and 'weight' in key]: #VGG
     #for name2 in [key for key in pn.keys() if 'conv' in key and 'weight' in key and 'layer' in key and 'shortcut' not in key]: #Res
     #for name2 in [key for key in pn.keys() if 'conv' in key and 'weight' in key and 'branch' in key and 'bn' not in key]: #Googlenet

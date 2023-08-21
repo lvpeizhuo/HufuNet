@@ -45,8 +45,8 @@ models = {'VGG' : vgg(),
           'googlenet':googlenet()}
 model = models[args.model]
 
-k=torch.load('\checkpoints\'+args.load_from+'.t7)
-model.load_state_dict(k)
+k=torch.load('./checkpoints/'+args.load_from+'.t7')
+model.load_state_dict(k['net'])
 
 if torch.cuda.is_available():
     model = model.cuda()
@@ -55,13 +55,15 @@ if torch.cuda.is_available():
 model.to(device)
 
 batch_size = 32
+        
+criterion = nn.CrossEntropyLoss().cuda()
 
 transform_test = transforms.Compose([
     transforms.ToTensor(),
     transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)),
 ])
 
-test_dataset = torchvision.datasets.CIFAR10(root='./data', train=False,download = True, transform=transform_test)
+test_dataset = torchvision.datasets.CIFAR10(root="/home/lpz/MHL/NewHufu/data/", train=False,download = True, transform=transform_test)
 
 testloader = DataLoader(test_dataset, batch_size=batch_size)
 
